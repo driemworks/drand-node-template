@@ -1,0 +1,66 @@
+[package]
+description = "Ajuna Network pallet battle mogs"
+name        = "pallet-ajuna-battle-mogs"
+
+authors.workspace    = true
+edition.workspace    = true
+homepage.workspace   = true
+repository.workspace = true
+version.workspace    = true
+
+[package.metadata.docs.rs]
+targets = [ "x86_64-unknown-linux-gnu" ]
+
+[dependencies]
+# Substrate - FRAME
+frame-benchmarking = { default-features = false, optional = true, git = "https://github.com/paritytech/polkadot-sdk.git" }
+frame-support = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk.git" }
+frame-system = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk.git" }
+# Substrate - SCALE codec
+parity-scale-codec = { version = "3.6.1", default-features = false, features = [
+	"derive",
+] }
+scale-info = { version = "2.5.0", default-features = false, features = [
+	"derive",
+] }
+# Substrate - Primitives
+sp-io = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+sp-std = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+
+[dev-dependencies]
+# Substrate - FRAME
+pallet-balances = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+pallet-insecure-randomness-collective-flip = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+# Substrate - Primitives
+sp-core = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+
+[features]
+default = [ "std" ]
+std = [
+    "frame-benchmarking/std",
+    "frame-support/std",
+    "frame-system/std",
+    "pallet-balances/std",
+    "pallet-insecure-randomness-collective-flip/std",
+    "parity-scale-codec/std",
+    "scale-info/std",
+    "sp-core/std",
+    "sp-io/std",
+    "sp-runtime/std",
+    "sp-std/std",
+]
+runtime-benchmarks = [
+    "frame-benchmarking/runtime-benchmarks",
+    "frame-support/runtime-benchmarks",
+    "frame-system/runtime-benchmarks",
+    "pallet-balances/runtime-benchmarks",
+    "sp-runtime/runtime-benchmarks",
+]
+try-runtime = [
+    "frame-support/try-runtime",
+    "frame-system/try-runtime",
+    "pallet-balances/try-runtime",
+    "pallet-insecure-randomness-collective-flip/try-runtime",
+    "sp-runtime/try-runtime",
+]

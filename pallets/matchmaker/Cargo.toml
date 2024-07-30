@@ -1,0 +1,40 @@
+[package]
+name = "pallet-matchmaker"
+description = "Ajuna Network pallet matchmaker for creating matches between players."
+
+authors.workspace    = true
+edition.workspace    = true
+homepage.workspace   = true
+repository.workspace = true
+version.workspace    = true
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+
+# Substrate (wasm)
+# Substrate - FRAME
+frame-benchmarking = { default-features = false, optional = true, git = "https://github.com/paritytech/polkadot-sdk.git" }
+frame-support = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk.git" }
+frame-system = { default-features = false, git = "https://github.com/paritytech/polkadot-sdk.git" }
+# Substrate - SCALE codec
+parity-scale-codec = { version = "3.6.1", default-features = false, features = [
+	"derive",
+] }
+scale-info = { version = "2.5.0", default-features = false, features = [
+	"derive",
+] }
+# Substrate - Primitives
+sp-runtime = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+sp-std = { git = "https://github.com/paritytech/polkadot-sdk.git", default-features = false }
+
+[features]
+default = ["std"]
+std = [
+    "parity-scale-codec/std",
+    "scale-info/std",
+	"frame-support/std",
+	"frame-system/std",
+]
+try-runtime = [ "frame-support/try-runtime" ]

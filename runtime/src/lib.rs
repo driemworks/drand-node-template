@@ -366,6 +366,240 @@ impl pallet_contracts::Config for Runtime {
 	type MaxTransientStorageSize = ();
 }
 
+parameter_types! {
+	pub const GamePalletId: PalletId = PalletId(*b"py/rlxdl");
+	pub const MaxOngoingGame: u32 = 200;
+	pub const LeaderLimit: u32 = 10;
+	pub const MaxAdmin: u32 = 10;
+	pub const RequestLimits: BlockNumber = 100800;
+	pub const GameStringLimit: u32 = 500;
+}
+
+/*
+
+The following are example of pallets from various projects in the ecosystem
+that rely on insecure randomness.
+
+*/
+
+/// Configure the pallet-game in pallets/game.
+impl pallet_game::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type WeightInfo = pallet_game::weights::SubstrateWeight<Runtime>;
+	type GameOrigin = EnsureRoot<Self::AccountId>;
+	type CollectionId = u32;
+	type ItemId = u32;
+	type MaxProperty = MaxProperties;
+	type PalletId = GamePalletId;
+	type MaxOngoingGames = MaxOngoingGame;
+	type GameRandomness = Drand;
+	type StringLimit = GameStringLimit;
+	type LeaderboardLimit = LeaderLimit;
+	type MaxAdmins = MaxAdmin;
+	type RequestLimit = RequestLimits;
+}
+
+//  Ajuna Battle Mogs
+
+impl pallet_ajuna_battle_mogs::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type Randomness = Drand;
+	type WeightInfo = ();
+}
+
+// Hexalem
+
+#[derive(Debug, PartialEq, Eq, Clone, Encode, Decode, MaxEncodedLen, TypeInfo)]
+pub struct ParameterGet<const N: u32>;
+
+impl<const N: u32> Get<u32> for ParameterGet<N> {
+	fn get() -> u32 {
+		N
+	}
+}
+
+pub type HexalemMaxPlayers = ParameterGet<100>;
+pub type HexalemMaxHexGridSize = ParameterGet<49>;
+pub type HexalemMaxTileSelection = ParameterGet<16>;
+
+// matchmaker parameters
+parameter_types! {
+	pub const AmountPlayers: u8 = 2;
+	pub const AmountBrackets: u8 = 2;
+}
+
+impl pallet_matchmaker::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type AmountPlayers = AmountPlayers;
+	type AmountBrackets = AmountBrackets;
+}
+
+impl pallet_elo::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type MaxPlayers = HexalemMaxPlayers;
+}
+
+parameter_types! {
+	pub FeeMultiplier: Multiplier = Multiplier::one();
+
+	pub const HexalemMinPlayers: u8 = 1;
+	pub const HexalemMaxRounds: u8 = 25;
+
+	pub const HexalemBlocksToPlayLimit: u8 = 10;
+
+	pub const HexalemTileResourceProductions: [ResourceProductions; NUMBER_OF_TILE_TYPES] = [
+		// Empty
+		ResourceProductions{
+			produces: [0, 0, 0, 0, 0, 0, 0],
+			human_requirements: [0, 0, 0, 0, 0, 0, 0],
+		},
+		// Home
+		ResourceProductions{
+			produces: [0, 1, 0, 0, 0, 0, 0],
+			human_requirements: [0, 0, 0, 0, 0, 0, 0],
+		},
+		// Grass
+		ResourceProductions{
+			produces: [0, 0, 0, 2, 0, 0, 0],
+			human_requirements: [0, 0, 0, 0, 0, 0, 0],
+		},
+		// Water
+		ResourceProductions{
+			produces: [0, 0, 2, 0, 0, 0, 0],
+			human_requirements: [0, 0, 0, 0, 0, 0, 0],
+		},
+		// Mountain
+		ResourceProductions{
+			produces: [0, 0, 0, 0, 0, 4, 0],
+			human_requirements: [0, 0, 0, 0, 0, 4, 0],
+		},
+		// Tree
+		ResourceProductions{
+			produces: [0, 0, 0, 1, 3, 0, 0],
+			human_requirements: [0, 0, 0, 0, 2, 0, 0],
+		},
+		// Desert
+		ResourceProductions{
+			produces: [0, 0, 0, 0, 0, 0, 0],
+			human_requirements: [0, 0, 0, 0, 0, 0, 0],
+		},
+		// Cave
+		ResourceProductions{
+			produces: [0, 0, 0, 0, 0, 2, 1],
+			human_requirements: [0, 0, 0, 0, 0, 2, 3],
+		},
+	];
+
+	pub const HexalemTileCosts: [TileCost<HexalemTile>; 15] = [
+		// tile_to_buy: HexalemTile(16), // Grass, level 0
+		// tile_to_buy: HexalemTile(24), // Water, level 0
+		// tile_to_buy: HexalemTile(32), // Mountain, level 0
+		// tile_to_buy: HexalemTile(40), // Tree, level 0
+		// tile_to_buy: HexalemTile(48), // Desert, level 0
+		// tile_to_buy: HexalemTile(56), // Cave, level 0
+
+		TileCost {
+			tile_to_buy: HexalemTile(16), // Grass, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(16), // Grass, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(16), // Grass, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(24), // Water, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(24), // Water, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(24), // Water, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+
+		TileCost {
+			tile_to_buy: HexalemTile(32), // Mountain, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(32), // Mountain, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(32), // Mountain, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(40), // Tree, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(40), // Tree, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(40), // Tree, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(48), // Desert, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(56), // Cave, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+		TileCost {
+			tile_to_buy: HexalemTile(56), // Cave, level 0
+			cost: ResourceAmount { resource_type: ResourceType::Mana, amount: 1, }
+		},
+	];
+
+	pub const HexalemFoodPerHuman: u8 = 1u8;
+	pub const HexalemWaterPerHuman: u8 = 2u8;
+	pub const HexalemHomePerHumans: u8 = 3u8;
+	pub const HexalemFoodPerTree: u8 = 1u8;
+
+	pub const HexalemDefaultPlayerResources: [ResourceUnit; NUMBER_OF_RESOURCE_TYPES] = [1, 1, 0, 0, 0, 0, 0];
+
+	pub const HexalemTargetGoalGold: u8 = 10u8;
+	pub const HexalemTargetGoalHuman: u8 = 7u8;
+
+}
+
+/// Configure the pallet-hexalem in pallets/hexalem.
+impl pallet_hexalem::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type WeightInfo = pallet_hexalem::weights::SubstrateWeight<Runtime>;
+	type MaxPlayers = HexalemMaxPlayers;
+	type MinPlayers = HexalemMinPlayers;
+	type MaxRounds = HexalemMaxRounds;
+	type BlocksToPlayLimit = HexalemBlocksToPlayLimit;
+	type MaxHexGridSize = HexalemMaxHexGridSize;
+	type MaxTileSelection = HexalemMaxTileSelection;
+	type Tile = HexalemTile;
+	type TileCosts = HexalemTileCosts;
+	type TileResourceProductions = HexalemTileResourceProductions;
+	type WaterPerHuman = HexalemWaterPerHuman;
+	type FoodPerHuman = HexalemFoodPerHuman;
+	type FoodPerTree = HexalemFoodPerTree;
+	type HomePerHumans = HexalemHomePerHumans;
+	type DefaultPlayerResources = HexalemDefaultPlayerResources;
+	type TargetGoalGold = HexalemTargetGoalGold;
+	type TargetGoalHuman = HexalemTargetGoalHuman;
+	type Matchmaker = MatchmakerModule;
+	type Elo = EloModule;
+	type Randomness = Drand;
+}
+
 // Create the runtime by composing the FRAME pallets that were previously configured.
 #[frame_support::runtime]
 mod runtime {
@@ -413,6 +647,12 @@ mod runtime {
 
 	#[runtime::pallet_index(9)]
 	pub type Contracts = pallet_contracts;
+
+	#[runtime::pallet_index(10)]
+	pub type BattleMogs: pallet_ajuna_battle_mogs;
+
+	#[runtime::pallet_index(11)]
+	pub type Game: pallet_game;
 }
 
 impl<LocalCall> frame_system::offchain::CreateSignedTransaction<LocalCall> for Runtime

@@ -4,11 +4,20 @@ edition = "2021"
 repository = "https://github.com/ideal_lab5/ideal-node-template"
 license = "MIT-0"
 homepage = "https://substrate.io"
+version = "0.0.1"
 
 [workspace]
 members = [
     "node",
     "runtime",
+    # ajuna's battle mogs
+    "pallets/ajuna-battle-mogs",
+    # xcavate's realx_game pallet
+    "pallets/game",
+    # hexalem game pallets
+    "pallets/elo",
+    "pallets/hexalem",
+    "pallets/matchmaker",
 ]
 resolver = "2"
 [profile.release]

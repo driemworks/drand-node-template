@@ -82,9 +82,11 @@ pallet-transaction-payment-rpc-runtime-api = { git = "https://github.com/parityt
 frame-benchmarking = { git = "https://github.com/paritytech/polkadot-sdk.git",  default-features = false, optional = true }
 frame-system-benchmarking = { git = "https://github.com/paritytech/polkadot-sdk.git",  default-features = false, optional = true }
 
-# The pallet in this template.
-# pallet-drand = { path = "../../", default-features = false }
+# the drand pallet for randomness
 pallet-drand = { git = "https://github.com/ideal-lab5/pallet-drand.git", default-features = false }
+# pallets that require randomness
+pallet-game = { path = "../pallets/game", default-features = false }
+pallet-ajuna-battle-mogs = { path = "../pallets/ajuna-battle-mogs", default-features = false }
 
 [build-dependencies]
 substrate-wasm-builder = { git = "https://github.com/paritytech/polkadot-sdk.git",  optional = true }
@@ -115,6 +117,9 @@ std = [
 	"pallet-timestamp/std",
 	"pallet-transaction-payment-rpc-runtime-api/std",
 	"pallet-transaction-payment/std",
+
+	"pallet-ajuna-battle-mogs/std",
+	"pallet-game/std",
 
 	"sp-api/std",
 	"sp-block-builder/std",
